@@ -17,7 +17,7 @@ def loader_string_to_module(code_string, fullname=None):
         poc_loader.set_data(code_string)
         spec = importlib.util.spec_from_file_location(module_name, file_path,
                                                       loader=poc_loader)
-        mod = importlib.util.module_from_spec(spc)
+        mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         return mod
     except ImportError:
@@ -47,8 +47,9 @@ class LoaderModule(importlib.abc.Loader):
         return data
 
     def exec_module(self, module):
-        filename = self.get_filename(self.filename)
+        filename = self.get_filename(self.fullname)
         poc_code = self.get_data(filename)
         obj = compile(poc_code, filename, "exec", dont_inherit=True,
                       optimize=-1)
         exec(obj, module.__dict__)
+

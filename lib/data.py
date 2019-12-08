@@ -15,3 +15,4 @@ POCS = []
 
 WORKER = Queue()
 
+CONF = {}
