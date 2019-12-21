@@ -4,13 +4,13 @@ import time
 from urllib.parse import urlparse
 
 
-def audit(target_ip: str):
+def audit(target_url: str):
     if check(target_ip):
         print("[*] Found Vulnerable")
     else:
         print("[*] Not Found Vulnerable")
 
-def check(target_ip: str):
+def check(target_url: str):
     host = urlparse(target_ip).netloc
     payload = "PLAY rtsp://%s/ RTSP/1.0\r\n" % target_ip
     payload += "Authorization"

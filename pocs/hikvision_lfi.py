@@ -1,7 +1,7 @@
 import requests
 
 
-def audit(args):
+def audit(target_url: str):
     payloads = "<Venus01>"
     url = args + "/" + payloads
     req = requests.get(url=url)
