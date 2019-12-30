@@ -6,19 +6,21 @@ from lib.requests import patch_session, _disable_warnings
 from lib.cmd import set_commandline_options
 from lib.loader import loader_string_to_module
 from lib.threads import run_threading
+from lib.color import Colors
 
 
 def banner():
-    logo = """
+    logo = """{0}
        _                   _ __
       (_)__  _______ __ __(_) /____
      / / _ \/ __(_-</ // / / __/ -_)
     /_/ .__/\__/___/\_,_/_/\__/\__/
    /_/
-            {} #dev
+            {1} #dev {2}
 
-            {}
-    """.format(VERSION, AUTHOR)
+            {3}{4}{5}
+    """.format(Colors.BLUE, Colors.YELLOW, VERSION, Colors.YELLOW,
+               Colors.FUCHSIA, AUTHOR, Colors.FUCHSIA)
     print(logo)
 
 
@@ -59,11 +61,11 @@ def worker():
         except Exception as e:
             ret = None
         if ret:
-            print("[*]", ret)
+            print(Colors.GREEN + "[*]" + Colors.GREEN, ret)
 
 
 def end():
-    print("[*] end shutdown {0}".format(time.strftime("%X")))
+    print("{0}[*]{1} end shutdown {2}".format(Colors.GREEN, Colors.GREEN, time.strftime("%X")))
 
 
 def main():
