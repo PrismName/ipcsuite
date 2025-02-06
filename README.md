@@ -10,7 +10,7 @@ IPCSuite是一款基于Python3开发的摄像头安全审计工具，主要用�
 - 内置多个POC检测脚本，覆盖常见漏洞类型
 - 支持多线程并发扫描，提高检测效率
 - 自动生成扫描报告，支持多种格式输出
-- 支持单目标和批量目标扫描
+- 目前只支持单目标扫描
 
 ## 环境要求
 
@@ -26,7 +26,7 @@ IPCSuite是一款基于Python3开发的摄像头安全审计工具，主要用�
 
 1. 克隆项目代码
 ```bash
-git clone https://github.com/your-username/ipcsuite.git
+git clone https://github.com/seaung/ipcsuite.git
 cd ipcsuite
 ```
 
