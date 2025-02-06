@@ -1,4 +1,5 @@
 import requests
+from lib.data import PocResult
 
 
 def audit(target_url: str):
@@ -14,24 +15,32 @@ def audit(target_url: str):
         res = requests.get(url=lfi_url)
         if res.status_code == 200:
             if payloads in str(res.content):
-                return {
-                    "vuln_name": "hikvision local file include",
-                    "payload": payload,
-                    "msg": "Found Vulnerable",
-                    "poc_name": "hikvision_lfi",
-                    "vuln_url": lfi_url
-                }
+                return PocResult(
+                    vuln_name="hikvision local file include",
+                    payload=payload,
+                    msg="Found Vulnerable",
+                    poc_name="hikvision_lfi",
+                    vuln_url=lfi_url,
+                    status=True
+                ).to_dict()
             else:
-                return {
-                    "msg": "Not Found Vulnerable",
-                    "poc_name": "hikvision_lfi",
-                    "vuln_url": lfi_url
-                }
+                return PocResult(
+                    msg="Not Found Vulnerable",
+                    poc_name="hikvision_lfi",
+                    vuln_url=lfi_url,
+                    status=False
+                ).to_dict()
         else:
-            return {
-                "msg": "Not Found Vulnerable",
-                "poc_name": "hikvision_lfi",
-                "vuln_url": lfi_url
-            }
-    except:
-        pass
+            return PocResult(
+                msg="Not Found Vulnerable",
+                poc_name="hikvision_lfi",
+                vuln_url=lfi_url,
+                status=False
+            ).to_dict()
+    except Exception as e:
+        return PocResult(
+            msg=f"Error: {str(e)}",
+            poc_name="hikvision_lfi",
+            vuln_url=lfi_url,
+            status=False
+        ).to_dict()

@@ -1,5 +1,6 @@
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 
 def exception_handler_function(threading_function, args=()):
@@ -14,25 +15,17 @@ def exception_handler_function(threading_function, args=()):
 
 
 def run_threading(number_threads, threading_function, args: tuple=()):
-    threads = []
-
-    for number_threads in range(number_threads):
-        thread = threading.Thread(target=exception_handler_function,
-                                  name=str(number_threads),
-                                  args=(threading_function, args))
-        thread.setDaemon(True)
-        try:
-            thread.start()
-        except Exception as e:
-            error_msg = "error occurred while starting new thread {0}".format(str(e))
-            print(error_msg)
-            break
-        threads.append(thread)
-    alive = True
-
-    while alive:
-        alive = False
-        for th in threads:
-            if th.isAlive():
-                alive = True
-                time.sleep(0.1)
+    with ThreadPoolExecutor(max_workers=number_threads) as executor:
+        futures = []
+        for _ in range(number_threads):
+            future = executor.submit(exception_handler_function,
+                                   threading_function, args)
+            futures.append(future)
+        
+        # 等待所有任务完成
+        for future in futures:
+            try:
+                future.result()
+            except Exception as e:
+                error_msg = "error occurred in thread pool: {0}".format(str(e))
+                print(error_msg)

@@ -12,8 +12,8 @@ def session_request(self, method, url, params=None, data=None, headers=None,
                     allow_redirects=True, proxies=None, hooks=None,
                     stream=None, verify=False, cert=None, json=None):
     conf = CONF.get("requests", {})
-    if timeout is None and "timeout" in conf:
-        timeout = conf["timeout"]
+    if timeout is None:
+        timeout = conf.get("timeout", 30)  # 默认30秒超时
     merged_cookies = merge_cookies(merge_cookies(RequestsCookieJar(),
                                                  self.cookies), cookies or
                                    (conf.cookie if "cookie" in conf else None))
@@ -32,15 +32,14 @@ def session_request(self, method, url, params=None, data=None, headers=None,
     prep = self.prepare_request(req)
     proxies = proxies or (conf["proxies"] if "proxies" in conf else {})
 
-    settings = self.merged_environment_settings(
-        prep.url, proxies, stream, verify, cert
-    )
-
     send_kwargs = {
         "timeout": timeout,
         "allow_redirects": allow_redirects,
+        "proxies": proxies,
+        "stream": stream,
+        "verify": verify,
+        "cert": cert
     }
-    send_kwargs.update(settings)
     resp = self.send(prep, **send_kwargs)
 
     if resp.encoding == "ISO-8859-1":
